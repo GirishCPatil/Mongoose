@@ -1,17 +1,14 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
-      console.log(products);
-      res.render('shop/product-list', {
-        prods: products,
-        pageTitle: 'All Products',
-        path: '/products'
-      });
+      res.json({ products: products });
     })
     .catch(err => {
       console.log(err);
+      res.status(500).json({ message: 'Failed to fetch products' });
     });
 };
 
@@ -19,42 +16,39 @@ exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
-      res.render('shop/product-detail', {
-        product: product,
-        pageTitle: product.title,
-        path: '/products'
-      });
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.json({ product: product });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to fetch product' });
+    });
 };
 
 exports.getIndex = (req, res, next) => {
   Product.find()
     .then(products => {
-      res.render('shop/index', {
-        prods: products,
-        pageTitle: 'Shop',
-        path: '/'
-      });
+      res.json({ products: products });
     })
     .catch(err => {
       console.log(err);
+      res.status(500).json({ message: 'Failed to fetch products' });
     });
 };
 
 exports.getCart = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
-    .execPopulate()
     .then(user => {
       const products = user.cart.items.filter(i => i.productId);
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: products
-      });
+      res.json({ products: products });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to fetch cart' });
+    });
 };
 
 exports.postCart = (req, res, next) => {
@@ -64,8 +58,11 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then(result => {
-      console.log(result);
-      res.redirect('/cart');
+      res.json({ message: 'Product added to cart!' });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to add to cart' });
     });
 };
 
@@ -74,30 +71,52 @@ exports.postCartDeleteProduct = (req, res, next) => {
   req.user
     .removeFromCart(prodId)
     .then(result => {
-      res.redirect('/cart');
+      res.json({ message: 'Product removed from cart!' });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to remove from cart' });
+    });
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder()
-    .then(result => {
-      res.redirect('/orders');
+    .populate('cart.items.productId')
+    .then(user => {
+      const products = user.cart.items
+        .filter(i => i.productId)
+        .map(i => {
+          return { quantity: i.quantity, product: { ...i.productId._doc } };
+        });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user
+        },
+        products: products
+      });
+      return order.save();
     })
-    .catch(err => console.log(err));
+    .then(result => {
+      req.user.cart = { items: [] };
+      return req.user.save();
+    })
+    .then(() => {
+      res.json({ message: 'Order placed successfully!' });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to place order' });
+    });
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ 'user.userId': req.user._id })
     .then(orders => {
-      res.render('shop/orders', {
-        path: '/orders',
-        pageTitle: 'Your Orders',
-        orders: orders
-      });
+      res.json({ orders: orders });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to fetch orders' });
+    });
 };

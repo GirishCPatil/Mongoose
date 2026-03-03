@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+    <div class="backdrop"></div>
+    <header class="main-header">
+        <button id="side-menu-toggle">Menu</button>
+        <nav class="main-header__nav">
+            <ul class="main-header__item-list">
+                <li class="main-header__item"><a href="/">Shop</a></li>
+                <li class="main-header__item"><a href="/products.html">Products</a></li>
+                <li class="main-header__item"><a href="/cart.html">Cart</a></li>
+                <li class="main-header__item"><a href="/orders.html">Orders</a></li>
+                <li class="main-header__item"><a class="active" href="/admin/add-product.html">Add Product</a></li>
+                <li class="main-header__item"><a href="/admin/products.html">Admin Products</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <nav class="mobile-nav">
+        <ul class="mobile-nav__item-list">
+            <li class="mobile-nav__item"><a href="/">Shop</a></li>
+            <li class="mobile-nav__item"><a href="/products.html">Products</a></li>
+            <li class="mobile-nav__item"><a href="/cart.html">Cart</a></li>
+            <li class="mobile-nav__item"><a href="/orders.html">Orders</a></li>
+            <li class="mobile-nav__item"><a class="active" href="/admin/add-product.html">Add Product</a></li>
+            <li class="mobile-nav__item"><a href="/admin/products.html">Admin Products</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <form class="product-form" id="add-product-form">
+            <div class="form-control">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title">
+            </div>
+            <div class="form-control">
+                <label for="imageUrl">Image URL</label>
+                <input type="text" name="imageUrl" id="imageUrl">
+            </div>
+            <div class="form-control">
+                <label for="price">Price</label>
+                <input type="number" name="price" id="price" step="0.01">
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="5"></textarea>
+            </div>
+            <button class="btn" type="submit">Add Product</button>
+        </form>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

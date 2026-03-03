@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/orders.css">
+</head>
+
+<body>
+    <div class="backdrop"></div>
+    <header class="main-header">
+        <button id="side-menu-toggle">Menu</button>
+        <nav class="main-header__nav">
+            <ul class="main-header__item-list">
+                <li class="main-header__item"><a href="/">Shop</a></li>
+                <li class="main-header__item"><a href="/products.html">Products</a></li>
+                <li class="main-header__item"><a href="/cart.html">Cart</a></li>
+                <li class="main-header__item"><a class="active" href="/orders.html">Orders</a></li>
+                <li class="main-header__item"><a href="/admin/add-product.html">Add Product</a></li>
+                <li class="main-header__item"><a href="/admin/products.html">Admin Products</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <nav class="mobile-nav">
+        <ul class="mobile-nav__item-list">
+            <li class="mobile-nav__item"><a href="/">Shop</a></li>
+            <li class="mobile-nav__item"><a href="/products.html">Products</a></li>
+            <li class="mobile-nav__item"><a href="/cart.html">Cart</a></li>
+            <li class="mobile-nav__item"><a class="active" href="/orders.html">Orders</a></li>
+            <li class="mobile-nav__item"><a href="/admin/add-product.html">Add Product</a></li>
+            <li class="mobile-nav__item"><a href="/admin/products.html">Admin Products</a></li>
+        </ul>
+    </nav>
+
+    <main id="orders-container">
+        <!-- Orders loaded dynamically -->
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/orders.js"></script>
+</body>
+
+</html>

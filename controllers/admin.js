@@ -1,13 +1,5 @@
 const Product = require('../models/product');
 
-exports.getAddProduct = (req, res, next) => {
-  res.render('admin/edit-product', {
-    pageTitle: 'Add Product',
-    path: '/admin/add-product',
-    editing: false
-  });
-};
-
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
@@ -23,34 +15,28 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(result => {
-      // console.log(result);
       console.log('Created Product');
-      res.redirect('/admin/products');
+      res.json({ message: 'Product created successfully!', product: result });
     })
     .catch(err => {
       console.log(err);
+      res.status(500).json({ message: 'Failed to create product' });
     });
 };
 
 exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit;
-  if (!editMode) {
-    return res.redirect('/');
-  }
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
       if (!product) {
-        return res.redirect('/');
+        return res.status(404).json({ message: 'Product not found' });
       }
-      res.render('admin/edit-product', {
-        pageTitle: 'Edit Product',
-        path: '/admin/edit-product',
-        editing: editMode,
-        product: product
-      });
+      res.json({ product: product });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to fetch product' });
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -70,32 +56,34 @@ exports.postEditProduct = (req, res, next) => {
     })
     .then(result => {
       console.log('UPDATED PRODUCT!');
-      res.redirect('/admin/products');
+      res.json({ message: 'Product updated successfully!' });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to update product' });
+    });
 };
 
 exports.getProducts = (req, res, next) => {
   Product.find()
-    // .select('title price -_id')
-    // .populate('userId', 'name')
     .then(products => {
-      console.log(products);
-      res.render('admin/products', {
-        prods: products,
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
-      });
+      res.json({ products: products });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to fetch products' });
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndRemove(prodId)
+  Product.findByIdAndDelete(prodId)
     .then(() => {
       console.log('DESTROYED PRODUCT');
-      res.redirect('/admin/products');
+      res.json({ message: 'Product deleted successfully!' });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to delete product' });
+    });
 };
